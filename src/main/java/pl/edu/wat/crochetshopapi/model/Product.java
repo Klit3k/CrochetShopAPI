@@ -1,12 +1,10 @@
 package pl.edu.wat.crochetshopapi.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,5 +20,7 @@ public class Product implements Serializable {
     private String description;
     private int price;
     private byte[] productPhoto;
-    //private List<byte[]> additionalProductPhotos;
+
+    @ElementCollection
+    private List<byte[]> additionalProductPhotos;
 }
