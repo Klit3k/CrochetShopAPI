@@ -1,5 +1,6 @@
 package pl.edu.wat.crochetshopapi.controller;
 
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -20,27 +21,26 @@ public class ProductController {
 
     @ResponseBody
     @PostMapping(value = "/product", params = {"name", "description", "price"})
-    public ResponseEntity<HttpStatusCode> addNewProduct(@RequestParam String name,
-                                                        @RequestParam String description,
-                                                        @RequestParam int price) {
-        productService.add(name, description, price);
-        return new ResponseEntity<>(HttpStatusCode.valueOf(200));
+    public ResponseEntity<?> addNewProduct(@RequestParam String name,
+                                           @RequestParam String description,
+                                           @RequestParam int price) {
+        return new ResponseEntity<>(productService.add(name, description, price), HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
     @PutMapping(value = "/product", params = {"id", "name", "description", "price"})
-    public ResponseEntity<HttpStatusCode> updateProduct(@RequestParam long id,
-                                                        @RequestParam String name,
-                                                        @RequestParam String description,
-                                                        @RequestParam int price) {
-        productService.update(id, name, description, price);
-        return new ResponseEntity<>(HttpStatusCode.valueOf(200));
+    public ResponseEntity<?> updateProduct(@RequestParam long id,
+                                           @RequestParam String name,
+                                           @RequestParam String description,
+                                           @RequestParam int price) {
+        return new ResponseEntity<>(productService.update(id, name, description, price), HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
     @DeleteMapping(value = "/product", params = "id")
     public ResponseEntity<HttpStatusCode> delProduct(@RequestParam long id) {
-        return productService.del(id);
+        productService.del(id);
+        return new ResponseEntity<>(HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
@@ -58,16 +58,18 @@ public class ProductController {
     @PostMapping(value = "/product/photo-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadProductPhoto(@RequestParam("file") MultipartFile file,
                                                 @RequestParam("id") long id) throws IOException {
-        return productService.uploadProductPhoto(id, file);
+        productService.uploadProductPhoto(id, file);
+        return new ResponseEntity<>("Image uploaded successfully", HttpStatusCode.valueOf(200));
     }
 
     @PostMapping(value = "/product/additional-photo-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadAdditionalProductPhotos(@RequestParam("file") MultipartFile file,
                                                            @RequestParam("id") long id) throws IOException {
-        return productService.uploadAdditionalPhotos(id, file);
+        productService.uploadAdditionalPhotos(id, file);
+        return new ResponseEntity<>("Image uploaded successfully", HttpStatusCode.valueOf(200));
     }
 
-    @ExceptionHandler(IOException.class)
+    @ExceptionHandler({IOException.class, FileSizeLimitExceededException.class})
     public ResponseEntity<Integer> handleIOException() {
         return new ResponseEntity<>(HttpStatusCode.valueOf(400));
     }
