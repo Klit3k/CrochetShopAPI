@@ -4,20 +4,22 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 
-@Getter
 @Setter
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
-public class Address {
+public class Cart {
     @Id
     private long id;
-    private String city;
-    private String street;
-    private String postalCode;
-    private String houseNumber;
+
+    //Nie dziala
+    @ElementCollection
+    private List<Product> products;
 
     @OneToOne
     @MapsId
