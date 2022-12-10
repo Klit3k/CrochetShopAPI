@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import pl.edu.wat.crochetshopapi.Configuration;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.repository.ProductRepository;
 
@@ -17,7 +18,6 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ProductService {
-    private final String IMAGES_PATH = "./img/";
     public ProductRepository productRepository;
 
     public Product add(String name, String description, int price) {
@@ -54,7 +54,7 @@ public class ProductService {
     }
 
     public void uploadProductPhoto(long id, MultipartFile file) throws IOException {
-        File convertFile = new File(IMAGES_PATH + file.getOriginalFilename());
+        File convertFile = new File(Configuration.IMAGES_PATH + file.getOriginalFilename());
         if (file.getContentType() == null || !file.getContentType().equals("image/png"))
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid type of file.");
         FileOutputStream fout = new FileOutputStream(convertFile);
@@ -66,7 +66,7 @@ public class ProductService {
     }
 
     public void uploadAdditionalPhotos(long id, MultipartFile file) throws IOException {
-        File convertFile = new File(IMAGES_PATH + file.getOriginalFilename());
+        File convertFile = new File(Configuration.IMAGES_PATH + file.getOriginalFilename());
         if (file.getContentType() == null || !file.getContentType().equals("image/png"))
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid type of file.");
         FileOutputStream fout = new FileOutputStream(convertFile);

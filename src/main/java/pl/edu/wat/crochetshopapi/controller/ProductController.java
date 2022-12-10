@@ -7,6 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.edu.wat.crochetshopapi.dto.Mapper;
+import pl.edu.wat.crochetshopapi.dto.ProductDTO;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.service.ProductService;
 
@@ -17,8 +19,9 @@ import java.util.NoSuchElementException;
 @RestController
 public class ProductController {
     @Autowired
-    ProductService productService;
-
+    private ProductService productService;
+    @Autowired
+    private Mapper mapper;
     @ResponseBody
     @PostMapping(value = "/product", params = {"name", "description", "price"})
     public ResponseEntity<?> addNewProduct(@RequestParam String name,
@@ -45,14 +48,14 @@ public class ProductController {
 
     @ResponseBody
     @GetMapping(value = "/product", params = "id")
-    public Product getProduct(@RequestParam long id) {
-        return productService.get(id);
+    public ProductDTO getProduct(@RequestParam long id) {
+        return mapper.productDTO(productService.get(id)).;
     }
 
     @ResponseBody
     @GetMapping(value = "/product")
-    public List<Product> getProduct() {
-        return productService.getAllProducts();
+    public List<ProductDTO> getProduct() {
+        return mapper.productListDTO(productService.getAllProducts());
     }
 
     @PostMapping(value = "/product/photo-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

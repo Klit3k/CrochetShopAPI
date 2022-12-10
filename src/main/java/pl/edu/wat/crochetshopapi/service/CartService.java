@@ -18,9 +18,18 @@ public class CartService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Client addProduct(long clientId, long productId) {
+    public Client addProductToCart(long clientId, long productId) {
         Client client = clientService.getClientById(clientId);
-        client.getCart().getProducts().add(productRepository.findById(productId).orElseThrow());
+        client.getCart()
+                .getProducts()
+                .add(productRepository.findById(productId).orElseThrow());
         return clientRepository.save(client);
     }
+    public void delProductFromCart(long clientId, long productId) {
+        Client client = clientService.getClientById(clientId);
+        client.getCart()
+                .getProducts()
+                .add(productRepository.findById(productId).orElseThrow());
+    }
+
 }
