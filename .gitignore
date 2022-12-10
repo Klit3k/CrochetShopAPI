@@ -38,3 +38,4 @@ out/
 
 ### Custom ###
 img
+/src/main/resources/application.properties
