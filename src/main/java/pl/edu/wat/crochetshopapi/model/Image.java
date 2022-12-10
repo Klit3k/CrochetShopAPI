@@ -3,8 +3,13 @@ package pl.edu.wat.crochetshopapi.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 public class Image {
     @Id

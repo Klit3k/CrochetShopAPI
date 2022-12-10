@@ -21,7 +21,8 @@ public class Product implements Serializable {
     private String description;
     private int price;
     private String category;
-    private byte[] productPhoto;
-    @ElementCollection
-    private List<byte[]> additionalProductPhotos;
+    @OneToOne
+    private Image productPhoto;
+    @OneToMany
+    private List<Image> additionalProductPhotos;
 }

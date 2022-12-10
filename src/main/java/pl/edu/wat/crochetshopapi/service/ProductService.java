@@ -1,13 +1,13 @@
 package pl.edu.wat.crochetshopapi.service;
 
-import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.crochetshopapi.Configuration;
+import pl.edu.wat.crochetshopapi.exception.ImageNotFound;
 import pl.edu.wat.crochetshopapi.exception.InvalidTypeOfFileException;
 import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
+import pl.edu.wat.crochetshopapi.model.Image;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.repository.ProductRepository;
 
@@ -18,9 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class ProductService {
+    @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ImageService imageService;
+
     public Product add(String name, String description, int price) {
         return productRepository.save(
                 Product.builder()
@@ -55,30 +58,40 @@ public class ProductService {
         return products;
     }
 
-    //TODO: Reformat needed
-    public void uploadProductPhoto(long id, MultipartFile file) throws IOException {
-        File convertFile = new File(Configuration.IMAGES_PATH + file.getOriginalFilename());
-        if (file.getContentType() == null || !file.getContentType().equals("image/png"))
-            throw new InvalidTypeOfFileException("Invalid type of file.");
-        FileOutputStream fout = new FileOutputStream(convertFile);
-        fout.write(file.getBytes());
-        Product p = get(id);
-        p.setProductPhoto(file.getBytes());
-        fout.close();
-        productRepository.save(p);
+    public void chooseMainImage(long productId, long imageId) {
+        Product product = get(productId);
+        Image oldImage = new Image();
+        boolean hasOld = false;
+        Image newImage = imageService.get(imageId);
+        if (product.getProductPhoto() != null)
+            oldImage = product.getProductPhoto();
+        if (!product.getAdditionalProductPhotos().contains(newImage))
+            throw new ImageNotFound("Not found any image with this id.");
+        product.getAdditionalProductPhotos().remove(newImage);
+        product.setProductPhoto(newImage);
+        if (product.getAdditionalProductPhotos().isEmpty())
+            product.setAdditionalProductPhotos(new ArrayList<>());
+        if (!hasOld)
+            product.getAdditionalProductPhotos().add(oldImage);
+        productRepository.save(product);
     }
 
+    public void addImage(long productId, long imageId) {
+        Product product = get(productId);
 
-    public void uploadAdditionalPhotos(long id, MultipartFile file) throws IOException {
-        File convertFile = new File(Configuration.IMAGES_PATH + file.getOriginalFilename());
-        if (file.getContentType() == null || !file.getContentType().equals("image/png"))
-            throw new InvalidTypeOfFileException("Invalid type of file.");
-        FileOutputStream fout = new FileOutputStream(convertFile);
-        fout.write(file.getBytes());
-        Product p = get(id);
-        p.getAdditionalProductPhotos().add(file.getBytes());
-        p.setProductPhoto(file.getBytes());
-        fout.close();
-        productRepository.save(p);
+        if (product.getAdditionalProductPhotos().isEmpty())
+            product.setAdditionalProductPhotos(new ArrayList<>());
+        product.getAdditionalProductPhotos()
+                .add(imageService.get(imageId));
+        productRepository.save(product);
+    }
+
+    public void removeImage(long productId, long imageId) {
+        Product product = get(productId);
+        Image image = imageService.get(imageId);
+        product.getAdditionalProductPhotos().remove(image);
+        if(product.getProductPhoto() != null && product.getProductPhoto().equals(image))
+            product.setProductPhoto(Configuration.DEFAULT_IMAGE);
+        productRepository.save(product);
     }
 }

@@ -49,37 +49,35 @@ public class ProductController {
 
     @ResponseBody
     @GetMapping(value = "/product", params = "id")
-    public ProductDTO getProduct(@RequestParam long id) {
-        return mapper.productDTO(productService.get(id));
+    public Product getProduct(@RequestParam long id) {
+        return productService.get(id);
     }
 
     @ResponseBody
     @GetMapping(value = "/product")
-    public List<ProductDTO> getProduct() {
+    public List<ProductDTO> getProducts() {
         return mapper.productListDTO(productService.getAllProducts());
     }
 
     @PostMapping(value = "/product/photo-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadProductPhoto(@RequestParam("file") MultipartFile file,
-                                                @RequestParam("id") long id) throws IOException {
-        productService.uploadProductPhoto(id, file);
+    public ResponseEntity<?> uploadProductPhoto(@RequestParam("productId") long productId,
+                                                @RequestParam("imageId") long imageId) throws IOException {
+        productService.addImage(productId, imageId);
         return new ResponseEntity<>("Image uploaded successfully", HttpStatusCode.valueOf(200));
     }
-
-    @PostMapping(value = "/product/additional-photo-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadAdditionalProductPhotos(@RequestParam("file") MultipartFile file,
-                                                           @RequestParam("id") long id) throws IOException {
-        productService.uploadAdditionalPhotos(id, file);
-        return new ResponseEntity<>("Image uploaded successfully", HttpStatusCode.valueOf(200));
+    //TODO: Not working yet
+    @PostMapping(value = "/product/photo-main", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> chooseMainPhoto(@RequestParam("productId") long productId,
+                                                @RequestParam("imageId") long imageId) throws IOException {
+        productService.chooseMainImage(productId, imageId);
+        return new ResponseEntity<>("Main photo has been chosen successfully.", HttpStatusCode.valueOf(200));
+    }
+    //TODO: Not working yet
+    @DeleteMapping(value = "/product/photo-remove")
+    public ResponseEntity<?> delPhoto(@RequestParam("productId") long productId,
+                                             @RequestParam("imageId") long imageId) throws IOException {
+        productService.removeImage(productId, imageId);
+        return new ResponseEntity<>("Photo has been deleted.", HttpStatusCode.valueOf(200));
     }
 
-//    @ExceptionHandler({IOException.class, FileSizeLimitExceededException.class})
-//    public ResponseEntity<Integer> handleIOException() {
-//        return new ResponseEntity<>(HttpStatusCode.valueOf(400));
-//    }
-//
-//    @ExceptionHandler({NoSuchElementException.class, IllegalArgumentException.class})
-//    public ResponseEntity<Integer> handleNoUserFound() {
-//        return new ResponseEntity<>(HttpStatusCode.valueOf(404));
-//    }
 }
