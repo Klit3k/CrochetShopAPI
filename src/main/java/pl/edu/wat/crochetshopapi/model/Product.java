@@ -20,6 +20,7 @@ public class Product implements Serializable {
     private String name;
     private String description;
     private int price;
+    private String category;
     private byte[] productPhoto;
     @ElementCollection
     private List<byte[]> additionalProductPhotos;

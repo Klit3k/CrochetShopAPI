@@ -55,6 +55,7 @@ public class OrderService {
              ids) {
             pr.add(productService.get(el));
         }
+
         Order order = orderRepository.save(
                 Order.builder()
                         .status(OrderStatus.ORDER_TO_BE_PROCESED)
