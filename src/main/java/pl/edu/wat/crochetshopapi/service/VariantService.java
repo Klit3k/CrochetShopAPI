@@ -2,6 +2,8 @@ package pl.edu.wat.crochetshopapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.edu.wat.crochetshopapi.exception.ProductAlreadyInVariant;
+import pl.edu.wat.crochetshopapi.exception.VariantAlreadyExistsException;
 import pl.edu.wat.crochetshopapi.exception.VariantNotFound;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.model.Variant;
@@ -22,17 +24,30 @@ public class VariantService {
                 .orElseThrow(() -> new VariantNotFound("Variant doesn't exists."));
     }
 
-    public Variant addToVariant(long variantId, long productId) {
-        Variant variant = get(variantId);
-        if (variant.getVariants().size() == 0)
-            variant.setVariants(new ArrayList<>());
-        variant.getVariants().add(productService.get(productId));
-        return variantRepository.save(variant);
+    public Variant create(String name) {
+        if(variantRepository.findByName(name).isPresent())
+            throw new VariantAlreadyExistsException("Variant is already existing.");
+        return variantRepository.save(Variant.builder()
+                .name(name)
+                .build());
     }
 
+    public Variant addToVariant(long variantId, long productId) {
+        Variant variant = get(variantId);
+        Product product = productService.get(productId);
+        if(variant.getVariants().contains(product))
+            throw new ProductAlreadyInVariant("Product is already in this variant.");
+        if (variant.getVariants().size() == 0)
+            variant.setVariants(new ArrayList<>());
+        variant.getVariants().add(product);
+        return variantRepository.save(variant);
+    }
+    public void deleteVariant(long variantId) {
+        variantRepository.delete(get(variantId));
+    }
     public void delFromVariant(long variantId, long productId) {
         Variant variant = get(variantId);
-        if(variant.getVariants().isEmpty())
+        if (variant.getVariants().isEmpty())
             variantRepository.delete(variant);
         else {
             variant.getVariants()
@@ -49,4 +64,10 @@ public class VariantService {
         variantRepository.findAll().forEach(variants::add);
         return variants;
     }
+
+    public Variant modify(long variantId, Variant editedVariant) {
+        editedVariant.setId(get(variantId).getId());
+        return variantRepository.save(editedVariant);
+    }
+
 }
