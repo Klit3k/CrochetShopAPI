@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.crochetshopapi.dto.Mapper;
 import pl.edu.wat.crochetshopapi.dto.ProductDTO;
+import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.service.ProductService;
 
@@ -72,13 +73,13 @@ public class ProductController {
         return new ResponseEntity<>("Image uploaded successfully", HttpStatusCode.valueOf(200));
     }
 
-    @ExceptionHandler({IOException.class, FileSizeLimitExceededException.class})
-    public ResponseEntity<Integer> handleIOException() {
-        return new ResponseEntity<>(HttpStatusCode.valueOf(400));
-    }
-
-    @ExceptionHandler({NoSuchElementException.class, IllegalArgumentException.class})
-    public ResponseEntity<Integer> handleNoUserFound() {
-        return new ResponseEntity<>(HttpStatusCode.valueOf(404));
-    }
+//    @ExceptionHandler({IOException.class, FileSizeLimitExceededException.class})
+//    public ResponseEntity<Integer> handleIOException() {
+//        return new ResponseEntity<>(HttpStatusCode.valueOf(400));
+//    }
+//
+//    @ExceptionHandler({NoSuchElementException.class, IllegalArgumentException.class})
+//    public ResponseEntity<Integer> handleNoUserFound() {
+//        return new ResponseEntity<>(HttpStatusCode.valueOf(404));
+//    }
 }

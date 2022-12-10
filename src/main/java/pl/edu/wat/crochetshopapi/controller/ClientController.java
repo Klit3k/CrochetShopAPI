@@ -23,6 +23,6 @@ public class ClientController {
 
     @GetMapping(value = "/client")
     public ResponseEntity<?> getClient(@RequestParam(name = "id") long id) {
-        return new ResponseEntity<>(clientService.getClientById(id), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(clientService.get(id), HttpStatusCode.valueOf(200));
     }
 }

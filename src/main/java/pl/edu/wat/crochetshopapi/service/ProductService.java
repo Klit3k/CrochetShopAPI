@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.crochetshopapi.Configuration;
+import pl.edu.wat.crochetshopapi.exception.InvalidTypeOfFileException;
+import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.repository.ProductRepository;
 
@@ -18,8 +20,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ProductService {
-    public ProductRepository productRepository;
-
+    private ProductRepository productRepository;
     public Product add(String name, String description, int price) {
         return productRepository.save(
                 Product.builder()
@@ -31,20 +32,21 @@ public class ProductService {
     }
 
     public void del(long id) {
-        productRepository.delete(productRepository.findById(id).orElseThrow());
+        productRepository.delete(get(id));
     }
 
     public Product update(long id, String name, String description, int price) {
-        Product product = productRepository.findById(id).orElseThrow();
-        if (product.getName() != name) product.setName(name);
+        Product product = get(id);
+        if (!product.getName().equals(name)) product.setName(name);
         if (product.getPrice() != price) product.setPrice(price);
-        if (product.getDescription() != description) product.setDescription(description);
+        if (!product.getDescription().equals(description)) product.setDescription(description);
         productRepository.save(product);
         return product;
     }
 
     public Product get(long id) {
-        return productRepository.findById(id).orElseThrow();
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found."));
     }
 
     public List<Product> getAllProducts() {
@@ -53,25 +55,27 @@ public class ProductService {
         return products;
     }
 
+    //TODO: Reformat needed
     public void uploadProductPhoto(long id, MultipartFile file) throws IOException {
         File convertFile = new File(Configuration.IMAGES_PATH + file.getOriginalFilename());
         if (file.getContentType() == null || !file.getContentType().equals("image/png"))
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid type of file.");
+            throw new InvalidTypeOfFileException("Invalid type of file.");
         FileOutputStream fout = new FileOutputStream(convertFile);
         fout.write(file.getBytes());
-        Product p = productRepository.findById(id).orElseThrow();
+        Product p = get(id);
         p.setProductPhoto(file.getBytes());
         fout.close();
         productRepository.save(p);
     }
 
+
     public void uploadAdditionalPhotos(long id, MultipartFile file) throws IOException {
         File convertFile = new File(Configuration.IMAGES_PATH + file.getOriginalFilename());
         if (file.getContentType() == null || !file.getContentType().equals("image/png"))
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid type of file.");
+            throw new InvalidTypeOfFileException("Invalid type of file.");
         FileOutputStream fout = new FileOutputStream(convertFile);
         fout.write(file.getBytes());
-        Product p = productRepository.findById(id).orElseThrow();
+        Product p = get(id);
         p.getAdditionalProductPhotos().add(file.getBytes());
         p.setProductPhoto(file.getBytes());
         fout.close();

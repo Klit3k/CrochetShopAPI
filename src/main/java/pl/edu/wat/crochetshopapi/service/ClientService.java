@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.edu.wat.crochetshopapi.exception.ClientAlreadyExists;
+import pl.edu.wat.crochetshopapi.exception.ClientNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Address;
 import pl.edu.wat.crochetshopapi.model.Cart;
 import pl.edu.wat.crochetshopapi.model.Client;
@@ -13,6 +15,7 @@ import pl.edu.wat.crochetshopapi.repository.ClientRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -23,8 +26,8 @@ public class ClientService {
     @Autowired
     private CartRepository cartRepository;
     public Client add(String name, String surname, String email) {
-        if (clientRepository.findByEmail(email).isPresent())
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400));
+        if (getByEmail(email).isPresent())
+            throw new ClientAlreadyExists("Cannot add new client because client with the same email already exists.");
         Client client = clientRepository.save(Client.builder()
                 .name(name)
                 .surname(surname)
@@ -43,18 +46,20 @@ public class ClientService {
         return client;
     }
     public void del(Long id) {
-        clientRepository.delete(clientRepository.findById(id).orElseThrow());
+        clientRepository.delete(get(id));
     }
     public Client update(Long id, Client editedClient) {
-        editedClient.setId(clientRepository.findById(id).orElseThrow().getId());
+        editedClient.setId(get(id).getId());
         clientRepository.save(editedClient);
         return editedClient;
     }
-    public Client getClientById(Long id) {
-        return clientRepository.findById(id).orElseThrow();
+    public Client get(Long id) {
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException("Client not found."));
     }
-    public Client getClientByEmail(String email) {
-        return clientRepository.findByEmail(email).orElseThrow();
+    public Optional<Client> getByEmail(String email) {
+        return clientRepository.findByEmail(email);
+                //.orElseThrow(() -> new ClientNotFoundException("Client not found."));
     }
     public List<Client> getAllClients() {
         List<Client> clientList = new ArrayList<>();
