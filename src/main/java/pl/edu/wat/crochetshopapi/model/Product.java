@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Embeddable
+//@Embeddable
 public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,6 @@ public class Product implements Serializable {
     private String description;
     private int price;
     private byte[] productPhoto;
-
     @ElementCollection
     private List<byte[]> additionalProductPhotos;
 }

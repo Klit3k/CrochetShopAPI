@@ -50,6 +50,6 @@ public class CartService {
     public void emptyCart(long clientId) {
         Client client = clientService.get(clientId);
         client.getCart().getProducts().clear();
-        cartRepository.save(client.getCart());
+        clientRepository.save(client);
     }
 }

@@ -1,13 +1,29 @@
 package pl.edu.wat.crochetshopapi.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.util.List;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name="store_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private OrderStatus status;
+
+    @OneToMany
+    private List<Product> products;
+
+    private long value;
+
+    @OneToOne
+    @JsonBackReference
+    private Client client;
 }

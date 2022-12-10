@@ -17,7 +17,7 @@ public class Cart {
     private long id;
 
     //Nie dziala
-    @ElementCollection
+    @OneToMany
     private List<Product> products;
 
     @OneToOne

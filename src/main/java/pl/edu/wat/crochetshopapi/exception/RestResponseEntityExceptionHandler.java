@@ -11,11 +11,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {ProductNotFoundException.class, ClientNotFoundException.class})
+    @ExceptionHandler(value = {
+            ProductNotFoundException.class,
+            ClientNotFoundException.class,
+            OrderNotFoundException.class})
     protected ResponseEntity<?> xNotFound(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatusCode.valueOf(404), request);
     }
-    @ExceptionHandler(value = {InvalidTypeOfFileException.class})
+
+    @ExceptionHandler(value = {InvalidTypeOfFileException.class, EmptyCartException.class, ClientAlreadyExists.class})
     protected ResponseEntity<?> xInvalid(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatusCode.valueOf(400), request);
     }
