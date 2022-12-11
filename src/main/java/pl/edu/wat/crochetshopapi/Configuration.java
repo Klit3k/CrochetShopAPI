@@ -8,4 +8,5 @@ public class Configuration {
      */
     public static final String IMAGES_PATH = "./img/";
     public static final Image DEFAULT_IMAGE = null;
+    public static final int PROMOCODE_LENGTH = 8;
 }
