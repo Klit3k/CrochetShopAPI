@@ -4,10 +4,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.wat.crochetshopapi.model.PromoCode;
-import pl.edu.wat.crochetshopapi.model.PromoCodeNotFoundException;
+import pl.edu.wat.crochetshopapi.exception.PromoCodeNotFoundException;
 import pl.edu.wat.crochetshopapi.repository.PromoCodeRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
