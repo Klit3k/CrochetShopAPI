@@ -34,7 +34,6 @@ public class CommentService {
         Comment comment = commentRepository.save(Comment.builder()
                 .author(clientService.get(clientId))
                 .content(content)
-                .product(productService.get(productId))
                 .creationTime(LocalDateTime.now())
                 .build());
         Product p = productService.get(productId);

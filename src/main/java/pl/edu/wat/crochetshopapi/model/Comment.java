@@ -1,7 +1,9 @@
 package pl.edu.wat.crochetshopapi.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,9 +21,7 @@ public class Comment {
     private long id;
     private String content;
     @ManyToOne
+    @JsonIgnore
     private Client author;
-    @ManyToOne
-    @JsonBackReference
-    private Product product;
     private LocalDateTime creationTime;
 }
