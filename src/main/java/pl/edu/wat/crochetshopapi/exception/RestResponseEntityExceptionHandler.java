@@ -29,8 +29,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             ClientAlreadyExistsException.class,
             ProductAlreadyInVariantException.class,
             VariantAlreadyExistsException.class,
-            ImageAlreadyExistsException.class})
+            ImageAlreadyExistsException.class,
+            PromoCodeAlreadyExistsException.class})
     protected ResponseEntity<?> xInvalid(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatusCode.valueOf(400), request);
     }
+
+
 }
