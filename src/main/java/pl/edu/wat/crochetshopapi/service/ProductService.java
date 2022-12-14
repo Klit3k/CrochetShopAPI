@@ -2,18 +2,13 @@ package pl.edu.wat.crochetshopapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.crochetshopapi.Configuration;
-import pl.edu.wat.crochetshopapi.exception.ImageNotFound;
-import pl.edu.wat.crochetshopapi.exception.InvalidTypeOfFileException;
+import pl.edu.wat.crochetshopapi.exception.ImageNotFoundException;
 import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Image;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.repository.ProductRepository;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +61,7 @@ public class ProductService {
         if (product.getProductPhoto() != null)
             oldImage = product.getProductPhoto();
         if (!product.getAdditionalProductPhotos().contains(newImage))
-            throw new ImageNotFound("Not found any image with this id.");
+            throw new ImageNotFoundException("Not found any image with this id.");
         product.getAdditionalProductPhotos().remove(newImage);
         product.setProductPhoto(newImage);
         if (product.getAdditionalProductPhotos().isEmpty())

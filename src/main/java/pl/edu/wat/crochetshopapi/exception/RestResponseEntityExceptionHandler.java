@@ -15,8 +15,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             ProductNotFoundException.class,
             ClientNotFoundException.class,
             OrderNotFoundException.class,
-            VariantNotFound.class,
-            ImageNotFound.class,
+            VariantNotFoundException.class,
+            ImageNotFoundException.class,
             PromoCodeNotFoundException.class
     })
     protected ResponseEntity<?> xNotFound(RuntimeException ex, WebRequest request) {
@@ -26,10 +26,10 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(value = {
             InvalidTypeOfFileException.class,
             EmptyCartException.class,
-            ClientAlreadyExists.class,
-            ProductAlreadyInVariant.class,
+            ClientAlreadyExistsException.class,
+            ProductAlreadyInVariantException.class,
             VariantAlreadyExistsException.class,
-            ImageAlreadyExists.class})
+            ImageAlreadyExistsException.class})
     protected ResponseEntity<?> xInvalid(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatusCode.valueOf(400), request);
     }

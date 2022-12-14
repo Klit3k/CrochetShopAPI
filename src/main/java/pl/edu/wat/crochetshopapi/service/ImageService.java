@@ -4,12 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.crochetshopapi.Configuration;
-import pl.edu.wat.crochetshopapi.exception.ImageAlreadyExists;
-import pl.edu.wat.crochetshopapi.exception.ImageNotFound;
+import pl.edu.wat.crochetshopapi.exception.ImageAlreadyExistsException;
+import pl.edu.wat.crochetshopapi.exception.ImageNotFoundException;
 import pl.edu.wat.crochetshopapi.exception.InvalidTypeOfFileException;
 import pl.edu.wat.crochetshopapi.model.Image;
 import pl.edu.wat.crochetshopapi.repository.ImageRepository;
-import pl.edu.wat.crochetshopapi.repository.ProductRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,13 +23,13 @@ public class ImageService {
 
     public Image get(long imageId) {
         return imageRepository.findById(imageId)
-                .orElseThrow(() -> new ImageNotFound("Image not found."));
+                .orElseThrow(() -> new ImageNotFoundException("Image not found."));
     }
 
     public void addImage(String name, MultipartFile file) throws IOException {
 
         if (imageRepository.findByName(name).isPresent())
-            throw new ImageAlreadyExists("Image with this name already exits.");
+            throw new ImageAlreadyExistsException("Image with this name already exits.");
 
         File convertFile = new File(Configuration.IMAGES_PATH + file.getOriginalFilename());
         if (file.getContentType() == null || !file.getContentType().equals("image/png"))

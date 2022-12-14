@@ -1,10 +1,8 @@
 package pl.edu.wat.crochetshopapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import pl.edu.wat.crochetshopapi.exception.ClientAlreadyExists;
+import pl.edu.wat.crochetshopapi.exception.ClientAlreadyExistsException;
 import pl.edu.wat.crochetshopapi.exception.ClientNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Address;
 import pl.edu.wat.crochetshopapi.model.Cart;
@@ -27,7 +25,7 @@ public class ClientService {
     private CartRepository cartRepository;
     public Client add(String name, String surname, String email) {
         if (getByEmail(email).isPresent())
-            throw new ClientAlreadyExists("Cannot add new client because client with the same email already exists.");
+            throw new ClientAlreadyExistsException("Cannot add new client because client with the same email already exists.");
         Client client = clientRepository.save(Client.builder()
                 .name(name)
                 .surname(surname)
