@@ -61,7 +61,17 @@ public class PromoCodeService {
         } else
             return false;
     }
-
+    public boolean unapply(String code) {
+        if(check(code) == PromoCodeStatus.USED) {
+            PromoCode promoCode = promoCodeRepository.findByCode(code).get();
+            if (promoCode.getValidFrom().isBefore(LocalDateTime.now()) && promoCode.getValidTo().isAfter(LocalDateTime.now())) {
+                promoCode.setUsed(true);
+                promoCodeRepository.save(promoCode);
+                return true;
+            }
+        }
+        return false;
+    }
     public PromoCode get(long codeId) {
         return promoCodeRepository.findById(codeId)
                 .orElseThrow(() -> new PromoCodeNotFoundException("Not found promo code"));
