@@ -3,6 +3,7 @@ package pl.edu.wat.crochetshopapi.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.wat.crochetshopapi.Configuration;
+import pl.edu.wat.crochetshopapi.dto.Mapper;
 import pl.edu.wat.crochetshopapi.exception.ImageNotFoundException;
 import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Image;
@@ -18,7 +19,6 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private ImageService imageService;
-
     public Product add(String name, String description, int price) {
         return productRepository.save(
                 Product.builder()

@@ -1,5 +1,6 @@
 package pl.edu.wat.crochetshopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,4 +26,7 @@ public class Product implements Serializable {
     private Image productPhoto;
     @OneToMany
     private List<Image> additionalProductPhotos;
+    @OneToMany
+    @JsonManagedReference
+    private List<Comment> comments;
 }

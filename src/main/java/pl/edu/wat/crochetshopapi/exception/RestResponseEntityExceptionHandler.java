@@ -31,9 +31,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             VariantAlreadyExistsException.class,
             ImageAlreadyExistsException.class,
             PromoCodeAlreadyExistsException.class})
-    protected ResponseEntity<?> xInvalid(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<?> xBadRequest(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatusCode.valueOf(400), request);
     }
 
+    @ExceptionHandler(value = {
+            CommentSpamException.class})
+    protected ResponseEntity<?> xTooManyRequests(RuntimeException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatusCode.valueOf(429), request);
+    }
 
 }

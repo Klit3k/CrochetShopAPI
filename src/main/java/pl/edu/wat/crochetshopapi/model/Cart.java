@@ -18,6 +18,7 @@ public class Cart {
 
     //Nie dziala
     @OneToMany
+    @JsonBackReference
     private List<Product> products;
 
     @OneToOne

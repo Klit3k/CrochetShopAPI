@@ -2,6 +2,8 @@ package pl.edu.wat.crochetshopapi.dto;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import pl.edu.wat.crochetshopapi.model.Client;
+import pl.edu.wat.crochetshopapi.model.Comment;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.service.ProductService;
 
@@ -14,11 +16,32 @@ public class Mapper {
     private ProductService productService;
 
     public ProductDTO productDTO(Product product) {
+        List<CommentDTO> commentDTOList = new ArrayList<>();
+        for(Comment el : product.getComments()) {
+            commentDTOList.add(commentDTO(el));
+        }
         return ProductDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
+                .comments(commentDTOList)
+                .build();
+    }
+
+    public AuthorDTO authorDTO(Client client) {
+        return AuthorDTO.builder()
+                .name(client.getName())
+                .surname(client.getSurname())
+                .build();
+    }
+
+    public CommentDTO commentDTO(Comment comment) {
+        return CommentDTO.builder()
+                .id(comment.getId())
+                .author(authorDTO(comment.getAuthor()))
+                .content(comment.getContent())
+                .creationTime(comment.getCreationTime())
                 .build();
     }
 

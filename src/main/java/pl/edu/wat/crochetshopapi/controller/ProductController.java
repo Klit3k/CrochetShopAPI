@@ -49,8 +49,8 @@ public class ProductController {
 
     @ResponseBody
     @GetMapping(value = "/product", params = "id")
-    public Product getProduct(@RequestParam long id) {
-        return productService.get(id);
+    public ProductDTO getProduct(@RequestParam long id) {
+        return mapper.productDTO(productService.get(id));
     }
 
     @ResponseBody

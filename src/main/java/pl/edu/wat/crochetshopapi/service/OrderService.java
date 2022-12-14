@@ -24,8 +24,6 @@ public class OrderService {
     @Autowired
     private CartService cartService;
     @Autowired
-    private CartRepository cartRepository;
-    @Autowired
     private ProductService productService;
     public Order addOrder(long clientId) {
         Client client = clientService.get(clientId);
