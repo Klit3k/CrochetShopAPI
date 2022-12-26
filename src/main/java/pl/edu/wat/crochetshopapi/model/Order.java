@@ -21,7 +21,7 @@ public class Order {
     @OneToMany
     private List<Product> products;
 
-    private long value;
+    private double value;
 
     @OneToOne
     @JsonBackReference

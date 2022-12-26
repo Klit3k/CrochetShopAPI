@@ -27,7 +27,7 @@ public class ProductController {
     @PostMapping(value = "/product", params = {"name", "description", "price"})
     public ResponseEntity<?> addNewProduct(@RequestParam String name,
                                            @RequestParam String description,
-                                           @RequestParam int price) {
+                                           @RequestParam double price) {
         return new ResponseEntity<>(productService.add(name, description, price), HttpStatusCode.valueOf(200));
     }
 
@@ -66,7 +66,7 @@ public class ProductController {
         return new ResponseEntity<>("Image uploaded successfully", HttpStatusCode.valueOf(200));
     }
     //TODO: Not working yet
-    @PostMapping(value = "/product/photo-main", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/product/photo-main")
     public ResponseEntity<?> chooseMainPhoto(@RequestParam("productId") long productId,
                                                 @RequestParam("imageId") long imageId) throws IOException {
         productService.chooseMainImage(productId, imageId);

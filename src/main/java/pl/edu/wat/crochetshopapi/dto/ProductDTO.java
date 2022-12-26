@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import pl.edu.wat.crochetshopapi.model.Comment;
+import pl.edu.wat.crochetshopapi.model.Image;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class ProductDTO {
     private long id;
     private String name;
     private String description;
-    private int price;
+    private double price;
     private List<CommentDTO> comments;
+    private Image image;
 }
