@@ -3,7 +3,9 @@ package pl.edu.wat.crochetshopapi.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import pl.edu.wat.crochetshopapi.Configuration;
 
+import java.io.ObjectInputFilter;
 import java.io.Serializable;
 import java.util.List;
 

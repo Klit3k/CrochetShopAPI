@@ -32,25 +32,25 @@ public class ProductController {
     }
 
     @ResponseBody
-    @PutMapping(value = "/product", params = {"id", "name", "description", "price"})
-    public ResponseEntity<?> updateProduct(@RequestParam long id,
+    @PutMapping(value = "/product", params = {"productId", "name", "description", "price"})
+    public ResponseEntity<?> updateProduct(@RequestParam long productId,
                                            @RequestParam String name,
                                            @RequestParam String description,
                                            @RequestParam int price) {
-        return new ResponseEntity<>(productService.update(id, name, description, price), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(productService.update(productId, name, description, price), HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
-    @DeleteMapping(value = "/product", params = "id")
-    public ResponseEntity<HttpStatusCode> delProduct(@RequestParam long id) {
-        productService.del(id);
+    @DeleteMapping(value = "/product", params = "productId")
+    public ResponseEntity<HttpStatusCode> delProduct(@RequestParam long productId) {
+        productService.del(productId);
         return new ResponseEntity<>(HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
-    @GetMapping(value = "/product", params = "id")
-    public ProductDTO getProduct(@RequestParam long id) {
-        return mapper.productDTO(productService.get(id));
+    @GetMapping(value = "/product", params = "productId")
+    public ResponseEntity<?> getProduct(@RequestParam long productId) {
+        return new ResponseEntity<>(mapper.productDTO(productService.get(productId)), HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody

@@ -8,9 +8,11 @@ import pl.edu.wat.crochetshopapi.exception.ImageNotFoundException;
 import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Image;
 import pl.edu.wat.crochetshopapi.model.Product;
+import pl.edu.wat.crochetshopapi.repository.ImageRepository;
 import pl.edu.wat.crochetshopapi.repository.ProductRepository;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -19,12 +21,13 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private ImageRepository imageRepository;
     public Product add(String name, String description, double price) {
         return productRepository.save(
                 Product.builder()
                         .name(name)
                         .description(description)
-                        //.productPhoto()
                         .price(price)
                         .build());
     }

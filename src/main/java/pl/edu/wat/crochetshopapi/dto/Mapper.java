@@ -27,6 +27,7 @@ public class Mapper {
                 .price(product.getPrice())
                 .comments(commentDTOList)
                 .image(product.getProductPhoto())
+                .additionalImages(product.getAdditionalProductPhotos())
                 .build();
     }
 

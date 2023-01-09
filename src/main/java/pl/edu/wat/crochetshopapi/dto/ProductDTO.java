@@ -22,4 +22,5 @@ public class ProductDTO {
     private double price;
     private List<CommentDTO> comments;
     private Image image;
+    private List<Image> additionalImages;
 }
