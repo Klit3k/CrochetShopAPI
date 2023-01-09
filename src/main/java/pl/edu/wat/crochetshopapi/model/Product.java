@@ -1,8 +1,11 @@
 package pl.edu.wat.crochetshopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import pl.edu.wat.crochetshopapi.Configuration;
 
+import java.io.ObjectInputFilter;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,10 +22,13 @@ public class Product implements Serializable {
     private long id;
     private String name;
     private String description;
-    private int price;
+    private double price;
     private String category;
     @OneToOne
     private Image productPhoto;
-    @OneToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     private List<Image> additionalProductPhotos;
+    @OneToMany
+    @JsonManagedReference
+    private List<Comment> comments;
 }

@@ -2,19 +2,17 @@ package pl.edu.wat.crochetshopapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.crochetshopapi.Configuration;
-import pl.edu.wat.crochetshopapi.exception.ImageNotFound;
-import pl.edu.wat.crochetshopapi.exception.InvalidTypeOfFileException;
+import pl.edu.wat.crochetshopapi.dto.Mapper;
+import pl.edu.wat.crochetshopapi.exception.ImageNotFoundException;
 import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Image;
 import pl.edu.wat.crochetshopapi.model.Product;
+import pl.edu.wat.crochetshopapi.repository.ImageRepository;
 import pl.edu.wat.crochetshopapi.repository.ProductRepository;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -23,13 +21,13 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private ImageService imageService;
-
-    public Product add(String name, String description, int price) {
+    @Autowired
+    private ImageRepository imageRepository;
+    public Product add(String name, String description, double price) {
         return productRepository.save(
                 Product.builder()
                         .name(name)
                         .description(description)
-                        //.productPhoto()
                         .price(price)
                         .build());
     }
@@ -61,18 +59,28 @@ public class ProductService {
     public void chooseMainImage(long productId, long imageId) {
         Product product = get(productId);
         Image oldImage = new Image();
+
         boolean hasOld = false;
         Image newImage = imageService.get(imageId);
-        if (product.getProductPhoto() != null)
-            oldImage = product.getProductPhoto();
+
+
         if (!product.getAdditionalProductPhotos().contains(newImage))
-            throw new ImageNotFound("Not found any image with this id.");
+            throw new ImageNotFoundException("Not found any image with this id.");
+
+        if (product.getProductPhoto() != null) {
+            oldImage = product.getProductPhoto();
+            hasOld = true;
+        }
+
         product.getAdditionalProductPhotos().remove(newImage);
         product.setProductPhoto(newImage);
-        if (product.getAdditionalProductPhotos().isEmpty())
-            product.setAdditionalProductPhotos(new ArrayList<>());
-        if (!hasOld)
+
+//        if (product.getAdditionalProductPhotos().isEmpty())
+//            product.setAdditionalProductPhotos(new ArrayList<>());
+
+        if (hasOld)
             product.getAdditionalProductPhotos().add(oldImage);
+
         productRepository.save(product);
     }
 
@@ -81,8 +89,10 @@ public class ProductService {
 
         if (product.getAdditionalProductPhotos().isEmpty())
             product.setAdditionalProductPhotos(new ArrayList<>());
+
         product.getAdditionalProductPhotos()
                 .add(imageService.get(imageId));
+
         productRepository.save(product);
     }
 

@@ -24,8 +24,6 @@ public class OrderService {
     @Autowired
     private CartService cartService;
     @Autowired
-    private CartRepository cartRepository;
-    @Autowired
     private ProductService productService;
     public Order addOrder(long clientId) {
         Client client = clientService.get(clientId);
@@ -36,7 +34,7 @@ public class OrderService {
 
         //Cart value
         List<Long> ids = new ArrayList<>();
-        long value = 0;
+        double value = 0;
         for (Product product : client.getCart().getProducts()) {
             value = value + product.getPrice();
             ids.add(product.getId());

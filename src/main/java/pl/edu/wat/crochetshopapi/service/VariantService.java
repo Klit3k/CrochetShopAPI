@@ -2,9 +2,9 @@ package pl.edu.wat.crochetshopapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.edu.wat.crochetshopapi.exception.ProductAlreadyInVariant;
+import pl.edu.wat.crochetshopapi.exception.ProductAlreadyInVariantException;
 import pl.edu.wat.crochetshopapi.exception.VariantAlreadyExistsException;
-import pl.edu.wat.crochetshopapi.exception.VariantNotFound;
+import pl.edu.wat.crochetshopapi.exception.VariantNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.model.Variant;
 import pl.edu.wat.crochetshopapi.repository.VariantRepository;
@@ -21,7 +21,7 @@ public class VariantService {
 
     public Variant get(long variantId) {
         return variantRepository.findById(variantId)
-                .orElseThrow(() -> new VariantNotFound("Variant doesn't exists."));
+                .orElseThrow(() -> new VariantNotFoundException("Variant doesn't exists."));
     }
 
     public Variant create(String name) {
@@ -36,7 +36,7 @@ public class VariantService {
         Variant variant = get(variantId);
         Product product = productService.get(productId);
         if(variant.getVariants().contains(product))
-            throw new ProductAlreadyInVariant("Product is already in this variant.");
+            throw new ProductAlreadyInVariantException("Product is already in this variant.");
         if (variant.getVariants().size() == 0)
             variant.setVariants(new ArrayList<>());
         variant.getVariants().add(product);

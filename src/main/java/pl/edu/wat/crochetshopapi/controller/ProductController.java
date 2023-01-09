@@ -27,30 +27,30 @@ public class ProductController {
     @PostMapping(value = "/product", params = {"name", "description", "price"})
     public ResponseEntity<?> addNewProduct(@RequestParam String name,
                                            @RequestParam String description,
-                                           @RequestParam int price) {
+                                           @RequestParam double price) {
         return new ResponseEntity<>(productService.add(name, description, price), HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
-    @PutMapping(value = "/product", params = {"id", "name", "description", "price"})
-    public ResponseEntity<?> updateProduct(@RequestParam long id,
+    @PutMapping(value = "/product", params = {"productId", "name", "description", "price"})
+    public ResponseEntity<?> updateProduct(@RequestParam long productId,
                                            @RequestParam String name,
                                            @RequestParam String description,
                                            @RequestParam int price) {
-        return new ResponseEntity<>(productService.update(id, name, description, price), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(productService.update(productId, name, description, price), HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
-    @DeleteMapping(value = "/product", params = "id")
-    public ResponseEntity<HttpStatusCode> delProduct(@RequestParam long id) {
-        productService.del(id);
+    @DeleteMapping(value = "/product", params = "productId")
+    public ResponseEntity<HttpStatusCode> delProduct(@RequestParam long productId) {
+        productService.del(productId);
         return new ResponseEntity<>(HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
-    @GetMapping(value = "/product", params = "id")
-    public Product getProduct(@RequestParam long id) {
-        return productService.get(id);
+    @GetMapping(value = "/product", params = "productId")
+    public ResponseEntity<?> getProduct(@RequestParam long productId) {
+        return new ResponseEntity<>(mapper.productDTO(productService.get(productId)), HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
@@ -66,7 +66,7 @@ public class ProductController {
         return new ResponseEntity<>("Image uploaded successfully", HttpStatusCode.valueOf(200));
     }
     //TODO: Not working yet
-    @PostMapping(value = "/product/photo-main", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/product/photo-main")
     public ResponseEntity<?> chooseMainPhoto(@RequestParam("productId") long productId,
                                                 @RequestParam("imageId") long imageId) throws IOException {
         productService.chooseMainImage(productId, imageId);
