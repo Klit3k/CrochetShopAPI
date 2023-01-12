@@ -17,7 +17,7 @@ public class Mapper {
 
     public ProductDTO productDTO(Product product) {
         List<CommentDTO> commentDTOList = new ArrayList<>();
-        for(Comment el : product.getComments()) {
+        for (Comment el : product.getComments()) {
             commentDTOList.add(commentDTO(el));
         }
         return ProductDTO.builder()
@@ -47,6 +47,19 @@ public class Mapper {
                 .build();
     }
 
+    public ClientDTO clientDTO(Client client) {
+        return ClientDTO.builder()
+                .id(client.getId())
+                .email(client.getEmail())
+                .name(client.getName())
+                .surname(client.getSurname())
+                .role(client.getRole())
+                .address(client.getAddress())
+                .orders(client.getOrder())
+                .cart(client.getCart())
+                .build();
+    }
+
     public List<ProductDTO> productListDTO(List<Product> allProducts) {
         List<ProductDTO> dtoList = new ArrayList<>();
         for (Product el : productService.getAllProducts()) {
@@ -54,4 +67,5 @@ public class Mapper {
         }
         return dtoList;
     }
+
 }

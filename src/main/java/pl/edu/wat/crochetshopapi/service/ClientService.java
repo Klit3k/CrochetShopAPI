@@ -1,6 +1,9 @@
 package pl.edu.wat.crochetshopapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.wat.crochetshopapi.exception.ClientAlreadyExistsException;
 import pl.edu.wat.crochetshopapi.exception.ClientNotFoundException;
@@ -23,13 +26,20 @@ public class ClientService {
     private AddressRepository addressRepository;
     @Autowired
     private CartRepository cartRepository;
-    public Client add(String name, String surname, String email) {
+
+    public PasswordEncoder getBcryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    public Client add(String name, String surname, String email, String password) {
         if (getByEmail(email).isPresent())
             throw new ClientAlreadyExistsException("Cannot add new client because client with the same email already exists.");
         Client client = clientRepository.save(Client.builder()
                 .name(name)
                 .surname(surname)
                 .email(email)
+                .password(getBcryptPasswordEncoder().encode(password))
+                .role("ROLE_USER")
                 .build());
 
         Address address = new Address();
@@ -43,6 +53,7 @@ public class ClientService {
 
         return client;
     }
+
     public void del(Long id) {
         clientRepository.delete(get(id));
     }

@@ -1,4 +1,4 @@
-package pl.edu.wat.crochetshopapi;
+package pl.edu.wat.crochetshopapi.security.filter;
 
 import java.io.IOException;
 
