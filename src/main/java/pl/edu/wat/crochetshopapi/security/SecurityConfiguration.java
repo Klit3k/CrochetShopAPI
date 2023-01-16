@@ -5,6 +5,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,16 +19,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import pl.edu.wat.crochetshopapi.model.Client;
 import pl.edu.wat.crochetshopapi.repository.ClientRepository;
 import pl.edu.wat.crochetshopapi.security.filter.JwtTokenFilter;
+import pl.edu.wat.crochetshopapi.security.filter.SimpleCORSFilter;
 
 @Configuration
 public class SecurityConfiguration {
     @Autowired
     private ClientRepository clientRepository;
     private final JwtTokenFilter jwtTokenFilter;
+    private final SimpleCORSFilter simpleCORSFilter;
 
-    public SecurityConfiguration(ClientRepository clientRepository, JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfiguration(ClientRepository clientRepository, JwtTokenFilter jwtTokenFilter, SimpleCORSFilter simpleCORSFilter) {
         this.clientRepository = clientRepository;
         this.jwtTokenFilter = jwtTokenFilter;
+        this.simpleCORSFilter = simpleCORSFilter;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -69,15 +73,38 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests()
 
                 //*** ADMIN ***
-                .requestMatchers("/product").hasAuthority("ROLE_ADMIN")
-                //*** USER ***
-//                .requestMatchers("").hasAuthority("ROLE_USER")
-                //*** ALL ***
-                .requestMatchers("/auth/login").permitAll()
-                .requestMatchers("/auth/register").permitAll()
-                .anyRequest().authenticated();
+                .requestMatchers(HttpMethod.GET,"/product").hasAuthority("ROLE_ADMIN")
+//                .requestMatchers(HttpMethod.GET,"/client").hasAuthority("ROLE_ADMIN")
 
+
+                //*** USER ***
+
+                .requestMatchers(HttpMethod.POST,"/cart").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.DELETE,"/cart").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.GET,"/cart").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.DELETE,"/empty-cart").hasAuthority("ROLE_USER")
+
+                .requestMatchers(HttpMethod.POST,"/comment").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.DELETE,"/comment").hasAuthority("ROLE_USER")
+
+                .requestMatchers(HttpMethod.GET,"/image").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.GET,"/images").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.POST,"/image").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.DELETE,"/image").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.PUT,"/empty-cart").hasAuthority("ROLE_USER")
+
+                //ordercontroller...
+
+                //*** ALL ***
+                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/check").permitAll()
+                .requestMatchers(HttpMethod.GET,"/product").permitAll()
+                .requestMatchers(HttpMethod.GET,"/client").permitAll()
+                .anyRequest().authenticated();
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(simpleCORSFilter, jwtTokenFilter.getClass());
+
         return http.build();
     }
 }
