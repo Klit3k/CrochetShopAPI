@@ -101,7 +101,9 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/auth/check").permitAll()
                 .requestMatchers(HttpMethod.GET,"/product").permitAll()
                 .requestMatchers(HttpMethod.GET,"/client").permitAll()
-                .anyRequest().authenticated();
+                .requestMatchers(HttpMethod.GET,"/checkout").permitAll()
+
+                .anyRequest().permitAll();
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(simpleCORSFilter, jwtTokenFilter.getClass());
 

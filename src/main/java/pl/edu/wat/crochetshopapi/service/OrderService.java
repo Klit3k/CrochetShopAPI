@@ -1,8 +1,16 @@
 package pl.edu.wat.crochetshopapi.service;
 
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import pl.edu.wat.crochetshopapi.exception.EmptyCartException;
 import pl.edu.wat.crochetshopapi.exception.OrderNotFoundException;
 import pl.edu.wat.crochetshopapi.model.*;
@@ -10,6 +18,7 @@ import pl.edu.wat.crochetshopapi.repository.CartRepository;
 import pl.edu.wat.crochetshopapi.repository.ClientRepository;
 import pl.edu.wat.crochetshopapi.repository.OrderRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,5 +97,10 @@ public class OrderService {
     public Order get(long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found."));
+    }
+
+
+    public void redirectToCheckout(long orderId) {
+
     }
 }
