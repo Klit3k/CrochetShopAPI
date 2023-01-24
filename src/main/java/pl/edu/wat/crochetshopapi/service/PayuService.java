@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.edu.wat.crochetshopapi.dto.*;
+import pl.edu.wat.crochetshopapi.model.Order;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,8 +27,8 @@ public class PayuService {
     String PAYU_MERCHANT_ID;
     @Autowired
     private Mapper mapper;
-    @Autowired
-    private OrderService orderService;
+
+
 
     public String getToken() {
         String urlTemplate = UriComponentsBuilder.newInstance()
@@ -58,14 +59,14 @@ public class PayuService {
         return "";
     }
 
-    public PayuCheckoutResponse checkout(long orderId) {
+    public PayuCheckoutResponse checkout(Order order) {
 
-        List<PayuProduct> products = orderService.get(orderId)
+
+        List<PayuProduct> products = order
                 .getProducts()
                 .stream()
                 .map(e -> mapper.productToPayu(e))
                 .toList();
-
 
         PayuCheckoutRequest req = PayuCheckoutRequest.builder()
                 .currencyCode("PLN")
@@ -74,6 +75,7 @@ public class PayuService {
                 .totalAmount(String.valueOf(products.stream().mapToLong(PayuProduct::getUnitPrice).sum()))
                 .merchantPosId(PAYU_MERCHANT_ID)
                 .products(products)
+                .buyer(mapper.clientToPayu(order.getClient()))
                 .build();
 
         String urlTemplate = UriComponentsBuilder.newInstance()
@@ -97,6 +99,9 @@ public class PayuService {
                     PayuCheckoutResponse.class,
                     PAYU_URL
             );
+
+            order.setPayuOrderId(Objects.requireNonNull(exchange.getBody()).getOrderId());
+
             return Objects.requireNonNull(exchange.getBody());
         } catch (RestClientException ex) {
             System.out.println("Server response error " + ex);
@@ -107,4 +112,6 @@ public class PayuService {
         }
         return null;
     }
+
+
 }

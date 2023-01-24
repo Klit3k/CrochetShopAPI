@@ -11,6 +11,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.edu.wat.crochetshopapi.dto.PayuAuthorizeResponse;
+import pl.edu.wat.crochetshopapi.dto.PayuCheckoutResponse;
 import pl.edu.wat.crochetshopapi.exception.EmptyCartException;
 import pl.edu.wat.crochetshopapi.exception.OrderNotFoundException;
 import pl.edu.wat.crochetshopapi.model.*;
@@ -34,6 +36,9 @@ public class OrderService {
     private CartService cartService;
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private PayuService payuService;
     public Order addOrder(long clientId) {
         Client client = clientService.get(clientId);
 
@@ -63,12 +68,16 @@ public class OrderService {
             pr.add(productService.get(el));
         }
 
-        Order order = orderRepository.save(
-                Order.builder()
-                        .status(OrderStatus.ORDER_TO_BE_PROCESED)
-                        .products(pr)
-                        .value(value)
-                        .build());
+        Order order = Order.builder()
+                .status(OrderStatus.PENDING)
+                .products(pr)
+                .value(value)
+                .client(client)
+                .build();
+        PayuCheckoutResponse payuResponse = payuService.checkout(order);
+        order.setPayuOrderId(payuResponse.getOrderId());
+        order.setRedirectUri(payuResponse.getRedirectUri());
+        orderRepository.save(order);
 
         if(client.getOrder().size() == 0) {
             client.setOrder(new ArrayList<>());
@@ -76,6 +85,8 @@ public class OrderService {
 
         client.getOrder().add(order);
         clientRepository.save(client);
+
+
         return client.getOrder()
                 .get(client.getOrder().size()-1);
     }
@@ -99,4 +110,7 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException("Order not found."));
     }
 
+    public void updateOrder(Order order) {
+        orderRepository.save(order);
+    }
 }

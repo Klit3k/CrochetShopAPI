@@ -1,5 +1,6 @@
 package pl.edu.wat.crochetshopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +28,7 @@ public class Client implements UserDetails {
     private String password;
     private String name;
     private String surname;
+    private String phone;
     private String role;
 
     @OneToOne(targetEntity = Address.class)
@@ -38,6 +40,7 @@ public class Client implements UserDetails {
     private Cart cart;
 
     @OneToMany(targetEntity = Order.class)
+    @JsonManagedReference()
     private List<Order> order;
 
     @Override

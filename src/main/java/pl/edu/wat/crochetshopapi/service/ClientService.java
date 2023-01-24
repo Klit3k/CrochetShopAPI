@@ -31,13 +31,14 @@ public class ClientService {
         return new BCryptPasswordEncoder();
     }
 
-    public Client add(String name, String surname, String email, String password) {
+    public Client add(String name, String surname, String phone, String email, String password) {
         if (getByEmail(email).isPresent())
             throw new ClientAlreadyExistsException("Cannot add new client because client with the same email already exists.");
         Client client = clientRepository.save(Client.builder()
                 .name(name)
                 .surname(surname)
                 .email(email)
+                .phone(phone)
                 .password(getBcryptPasswordEncoder().encode(password))
                 .role("ROLE_USER")
                 .build());
@@ -74,5 +75,15 @@ public class ClientService {
         List<Client> clientList = new ArrayList<>();
         clientRepository.findAll().forEach(clientList::add);
         return clientList;
+    }
+
+    public Client addAdress(long clientId, Address newAddress) {
+        Address address = get(clientId).getAddress();
+        address.setCity(newAddress.getCity());
+        address.setStreet(newAddress.getStreet());
+        address.setPostalCode(newAddress.getPostalCode());
+        address.setHouseNumber(newAddress.getHouseNumber());
+        addressRepository.save(address);
+        return get(clientId);
     }
 }

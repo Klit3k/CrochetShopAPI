@@ -23,6 +23,22 @@ public class Mapper {
                 .name(product.getName())
                 .build();
     }
+
+    public PayuBuyer clientToPayu(Client client) {
+        return PayuBuyer.builder()
+                .firstName(client.getName())
+                .lastName(client.getSurname())
+                .phone(client.getPhone())
+                .language("pl")
+                .delivery(
+                        PayuDelivery.builder()
+                                .city(client.getAddress().getCity())
+                                .street(client.getAddress().getStreet())
+                                .postalCode(client.getAddress().getPostalCode())
+                                .build()
+                )
+                .build();
+    }
     public ProductDTO productDTO(Product product) {
         List<CommentDTO> commentDTOList = new ArrayList<>();
         for (Comment el : product.getComments()) {
@@ -59,6 +75,7 @@ public class Mapper {
         return ClientDTO.builder()
                 .id(client.getId())
                 .email(client.getEmail())
+                .phone(client.getPhone())
                 .name(client.getName())
                 .surname(client.getSurname())
                 .role(client.getRole())
@@ -76,4 +93,20 @@ public class Mapper {
         return dtoList;
     }
 
+    public OrderDTO orderDTO(Order order) {
+        return OrderDTO.builder()
+                .redirectUri(order.getRedirectUri())
+                .id(order.getId())
+                .status(order.getStatus())
+                .payuOrderId(order.getPayuOrderId())
+                .clientId(order.getClient().getId())
+                .products(order.getProducts())
+                .value(order.getValue())
+                .build();
+    }
+    public List<OrderDTO> ordersListDTO(List<Order> orders) {
+        return orders.stream()
+                .map(this::orderDTO)
+                .toList();
+    }
 }

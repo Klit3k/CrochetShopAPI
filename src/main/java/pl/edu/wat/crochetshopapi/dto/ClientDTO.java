@@ -22,6 +22,7 @@ public class ClientDTO {
     private String role;
     private Address address;
     private Cart cart;
+    private String phone;
     private List<Order> orders;
 
 }

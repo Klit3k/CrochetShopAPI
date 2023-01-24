@@ -16,5 +16,6 @@ public class PayuCheckoutRequest implements Serializable {
     String description;
     String currencyCode;
     String totalAmount;
+    PayuBuyer buyer;
     List<PayuProduct> products;
 }

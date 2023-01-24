@@ -34,7 +34,8 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestParam(name = "name") String name,
                                       @RequestParam(name = "surname") String surname,
                                       @RequestParam(name = "email") String email,
-                                      @RequestParam(name = "password") String password) {
-        return new ResponseEntity<>(mapper.clientDTO(clientService.add(name, surname, email, password)), HttpStatus.OK);
+                                      @RequestParam(name = "password") String password,
+                                      @RequestParam(name = "phone") String phone) {
+        return new ResponseEntity<>(mapper.clientDTO(clientService.add(name, surname, phone, email, password)), HttpStatus.OK);
     }
 }
