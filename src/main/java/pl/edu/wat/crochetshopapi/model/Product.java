@@ -20,6 +20,7 @@ public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private boolean isReserved;
     private String name;
     private String description;
     private double price;

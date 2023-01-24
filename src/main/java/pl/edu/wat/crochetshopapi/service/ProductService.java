@@ -36,13 +36,9 @@ public class ProductService {
         productRepository.delete(get(id));
     }
 
-    public Product update(long id, String name, String description, int price) {
-        Product product = get(id);
-        if (!product.getName().equals(name)) product.setName(name);
-        if (product.getPrice() != price) product.setPrice(price);
-        if (!product.getDescription().equals(description)) product.setDescription(description);
-        productRepository.save(product);
-        return product;
+    public Product update(long id, Product newProduct) {
+        newProduct.setId(get(id).getId());
+        return productRepository.save(newProduct);
     }
 
     public Product get(long id) {

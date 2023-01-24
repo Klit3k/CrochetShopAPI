@@ -2,6 +2,7 @@ package pl.edu.wat.crochetshopapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.edu.wat.crochetshopapi.exception.ProductIsReservedException;
 import pl.edu.wat.crochetshopapi.model.Client;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.repository.CartRepository;
@@ -22,7 +23,14 @@ public class CartService {
 
     public Client addProductToCart(long clientId, long productId) {
         Client client = clientService.get(clientId);
-        client.getCart().getProducts().add(productService.get(productId));
+        Product product = productService.get(productId);
+        if(product.isReserved())
+            throw new ProductIsReservedException("Product is reserved.");
+        else {
+            product.setReserved(true);
+            productService.update(productId, product);
+        }
+        client.getCart().getProducts().add(product);
         return clientRepository.save(client);
     }
 

@@ -37,7 +37,13 @@ public class ProductController {
                                            @RequestParam String name,
                                            @RequestParam String description,
                                            @RequestParam int price) {
-        return new ResponseEntity<>(productService.update(productId, name, description, price), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(
+                productService.update(productId, Product.builder()
+                        .name(name)
+                        .description(description)
+                        .price(price)
+                        .build()
+        ), HttpStatusCode.valueOf(200));
     }
 
     @ResponseBody
