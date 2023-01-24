@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.edu.wat.crochetshopapi.model.Client;
 import pl.edu.wat.crochetshopapi.model.Comment;
+import pl.edu.wat.crochetshopapi.model.Order;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.service.ProductService;
 
@@ -15,6 +16,13 @@ import java.util.List;
 public class Mapper {
     private ProductService productService;
 
+    public PayuProduct productToPayu(Product product){
+        return PayuProduct.builder()
+                .quantity(1)
+                .unitPrice((long) (product.getPrice()*100))
+                .name(product.getName())
+                .build();
+    }
     public ProductDTO productDTO(Product product) {
         List<CommentDTO> commentDTOList = new ArrayList<>();
         for (Comment el : product.getComments()) {

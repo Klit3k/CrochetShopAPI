@@ -99,8 +99,4 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException("Order not found."));
     }
 
-
-    public void redirectToCheckout(long orderId) {
-
-    }
 }

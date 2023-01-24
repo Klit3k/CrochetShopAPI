@@ -79,7 +79,7 @@ public class SecurityConfiguration {
 
                 //*** USER ***
 
-                .requestMatchers(HttpMethod.POST,"/cart").hasAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.POST,"/cart").permitAll()//.hasAuthority("ROLE_USER")
                 .requestMatchers(HttpMethod.DELETE,"/cart").hasAuthority("ROLE_USER")
                 .requestMatchers(HttpMethod.GET,"/cart").hasAuthority("ROLE_USER")
                 .requestMatchers(HttpMethod.DELETE,"/empty-cart").hasAuthority("ROLE_USER")

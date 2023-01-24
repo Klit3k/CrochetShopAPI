@@ -1,5 +1,6 @@
 package pl.edu.wat.crochetshopapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -38,10 +39,8 @@ public class OrderController {
     }
 
     @GetMapping(value = "/checkout")
-    public ResponseEntity<?> checkout(@RequestParam("orderId") long orderId) {
-        if(payuService.getToken().isEmpty())
-            return new ResponseEntity<>(HttpStatus.IM_USED);
-        else
-          return new ResponseEntity<>(payuService.getToken(), HttpStatusCode.valueOf(200));
+    public ResponseEntity<?> checkout(@RequestParam("orderId") long orderId)  {
+
+          return new ResponseEntity<>(payuService.checkout(orderId), HttpStatusCode.valueOf(200));
     }
 }
