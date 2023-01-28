@@ -35,7 +35,7 @@ public class SecurityConfiguration {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void saveUser() {
+    public void saveAdmin() {
         Client client;
         if(clientRepository.findByEmail(pl.edu.wat.crochetshopapi.Configuration.ADMIN_LOGIN).isPresent()) {
             client = clientRepository.findByEmail(pl.edu.wat.crochetshopapi.Configuration.ADMIN_LOGIN).get();
@@ -73,25 +73,25 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests()
 
                 //*** ADMIN ***
-                .requestMatchers(HttpMethod.GET,"/product").hasAuthority("ROLE_ADMIN")
+
 //                .requestMatchers(HttpMethod.GET,"/client").hasAuthority("ROLE_ADMIN")
 
 
                 //*** USER ***
 
-                .requestMatchers(HttpMethod.POST,"/cart").permitAll()//.hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.DELETE,"/cart").hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.GET,"/cart").hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.DELETE,"/empty-cart").hasAuthority("ROLE_USER")
-
-                .requestMatchers(HttpMethod.POST,"/comment").hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.DELETE,"/comment").hasAuthority("ROLE_USER")
-
-                .requestMatchers(HttpMethod.GET,"/image").hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.GET,"/images").hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.POST,"/image").hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.DELETE,"/image").hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.PUT,"/empty-cart").hasAuthority("ROLE_USER")
+//                .requestMatchers(HttpMethod.POST,"/cart").permitAll()//.hasAuthority("ROLE_USER")
+//                .requestMatchers(HttpMethod.DELETE,"/cart").hasAuthority("ROLE_USER")
+//                .requestMatchers(HttpMethod.GET,"/cart").hasAuthority("ROLE_USER")
+//                .requestMatchers(HttpMethod.DELETE,"/empty-cart").hasAuthority("ROLE_USER")
+//
+//                .requestMatchers(HttpMethod.POST,"/comment").hasAuthority("ROLE_USER")
+//                .requestMatchers(HttpMethod.DELETE,"/comment").hasAuthority("ROLE_USER")
+//
+//                .requestMatchers(HttpMethod.GET,"/image").hasAuthority("ROLE_USER")
+//                .requestMatchers(HttpMethod.GET,"/images").hasAuthority("ROLE_USER")
+//                .requestMatchers(HttpMethod.POST,"/image").hasAuthority("ROLE_ADMIN")
+//                .requestMatchers(HttpMethod.DELETE,"/image").hasAuthority("ROLE_USER")
+//                .requestMatchers(HttpMethod.PUT,"/empty-cart").hasAuthority("ROLE_USER")
 
                 //ordercontroller...
 
@@ -99,7 +99,7 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/check").permitAll()
-                .requestMatchers(HttpMethod.GET,"/product").permitAll()
+//                .requestMatchers(HttpMethod.GET,"/product").permitAll()
                 .requestMatchers(HttpMethod.GET,"/client").permitAll()
                 .requestMatchers(HttpMethod.GET,"/checkout").permitAll()
 

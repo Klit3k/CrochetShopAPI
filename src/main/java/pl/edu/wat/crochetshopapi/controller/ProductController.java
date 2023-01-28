@@ -1,21 +1,18 @@
 package pl.edu.wat.crochetshopapi.controller;
 
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.crochetshopapi.dto.Mapper;
 import pl.edu.wat.crochetshopapi.dto.ProductDTO;
-import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.service.ProductService;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 public class ProductController {
@@ -36,7 +33,9 @@ public class ProductController {
     public ResponseEntity<?> updateProduct(@RequestParam long productId,
                                            @RequestParam String name,
                                            @RequestParam String description,
-                                           @RequestParam int price) {
+                                           @RequestParam float price) {
+        if(name.isBlank() || description.isBlank() )
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(
                 productService.update(productId, Product.builder()
                         .name(name)
@@ -60,12 +59,12 @@ public class ProductController {
     }
 
     @ResponseBody
-    @GetMapping(value = "/product")
+    @GetMapping(value = "/products")
     public List<ProductDTO> getProducts() {
         return mapper.productListDTO(productService.getAllProducts());
     }
 
-    @PostMapping(value = "/product/photo-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/product/photo-upload")
     public ResponseEntity<?> uploadProductPhoto(@RequestParam("productId") long productId,
                                                 @RequestParam("imageId") long imageId) throws IOException {
         productService.addImage(productId, imageId);

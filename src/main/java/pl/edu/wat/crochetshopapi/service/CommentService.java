@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.wat.crochetshopapi.Configuration;
 import pl.edu.wat.crochetshopapi.exception.CommentSpamException;
-import pl.edu.wat.crochetshopapi.exception.PromoCodeNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Comment;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.repository.CommentRepository;

@@ -6,8 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.wat.crochetshopapi.dto.Mapper;
 import pl.edu.wat.crochetshopapi.model.AuthRequest;
+import pl.edu.wat.crochetshopapi.model.AuthResponse;
 import pl.edu.wat.crochetshopapi.service.AuthService;
 import pl.edu.wat.crochetshopapi.service.ClientService;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class AuthController {
@@ -27,7 +32,15 @@ public class AuthController {
 
     @PostMapping("/auth/check")
     public ResponseEntity<?> checkJwt(@RequestHeader String Authorization ){
-        return new ResponseEntity<>(authService.checkJwtToken(Authorization), HttpStatus.OK);
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("isTokenVerified", authService.checkJwtUser(Authorization));
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    @PostMapping("/auth/check-admin")
+    public ResponseEntity<?> checkJwtAdmin(@RequestHeader String Authorization ){
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("isTokenVerified", authService.checkJwtAdmin(Authorization));
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(value = "/auth/register")
@@ -36,6 +49,8 @@ public class AuthController {
                                       @RequestParam(name = "email") String email,
                                       @RequestParam(name = "password") String password,
                                       @RequestParam(name = "phone") String phone) {
-        return new ResponseEntity<>(mapper.clientDTO(clientService.add(name, surname, phone, email, password)), HttpStatus.OK);
+        clientService.add(name, surname, phone, email, password);
+        AuthResponse authResponse = (AuthResponse) Objects.requireNonNull(authService.getJwtToken(email, password).getBody());
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 }

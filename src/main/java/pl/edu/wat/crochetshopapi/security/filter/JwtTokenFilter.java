@@ -3,7 +3,6 @@ package pl.edu.wat.crochetshopapi.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,14 +17,13 @@ import pl.edu.wat.crochetshopapi.Configuration;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/auth/check")) {
+        if(request.getServletPath().equals("/auth/check") || request.getServletPath().equals("/auth/check-admin")) {
             filterChain.doFilter(request, response);
             return;
         }

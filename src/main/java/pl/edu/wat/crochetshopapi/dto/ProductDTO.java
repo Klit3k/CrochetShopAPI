@@ -1,12 +1,10 @@
 package pl.edu.wat.crochetshopapi.dto;
 
 
-import jakarta.persistence.ElementCollection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import pl.edu.wat.crochetshopapi.model.Comment;
 import pl.edu.wat.crochetshopapi.model.Image;
 
 import java.util.List;

@@ -8,8 +8,11 @@ import pl.edu.wat.crochetshopapi.model.Order;
 import pl.edu.wat.crochetshopapi.model.Product;
 import pl.edu.wat.crochetshopapi.service.ProductService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @AllArgsConstructor
@@ -67,7 +70,7 @@ public class Mapper {
                 .id(comment.getId())
                 .author(authorDTO(comment.getAuthor()))
                 .content(comment.getContent())
-                .creationTime(comment.getCreationTime())
+                .creationTime(comment.getCreationTime().format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm", new Locale("pl"))))
                 .build();
     }
 
@@ -86,11 +89,11 @@ public class Mapper {
     }
 
     public List<ProductDTO> productListDTO(List<Product> allProducts) {
-        List<ProductDTO> dtoList = new ArrayList<>();
-        for (Product el : productService.getAllProducts()) {
-            dtoList.add(productDTO(el));
-        }
-        return dtoList;
+        return allProducts.stream()
+                .filter(e -> !e.isReserved())
+                .map(this::productDTO)
+                .sorted(Comparator.comparing(ProductDTO::getId))
+                .toList();
     }
 
     public OrderDTO orderDTO(Order order) {

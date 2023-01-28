@@ -3,7 +3,6 @@ package pl.edu.wat.crochetshopapi.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.wat.crochetshopapi.Configuration;
-import pl.edu.wat.crochetshopapi.dto.Mapper;
 import pl.edu.wat.crochetshopapi.exception.ImageNotFoundException;
 import pl.edu.wat.crochetshopapi.exception.ProductNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Image;
@@ -12,7 +11,6 @@ import pl.edu.wat.crochetshopapi.repository.ImageRepository;
 import pl.edu.wat.crochetshopapi.repository.ProductRepository;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -37,8 +35,11 @@ public class ProductService {
     }
 
     public Product update(long id, Product newProduct) {
-        newProduct.setId(get(id).getId());
-        return productRepository.save(newProduct);
+        Product oldProduct = get(id);
+        oldProduct.setName(newProduct.getName());
+        oldProduct.setDescription(newProduct.getDescription());
+        oldProduct.setPrice(newProduct.getPrice());
+        return productRepository.save(oldProduct);
     }
 
     public Product get(long id) {

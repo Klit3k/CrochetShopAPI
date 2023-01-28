@@ -15,5 +15,5 @@ public class CommentDTO {
     private long id;
     private AuthorDTO author;
     private String content;
-    private LocalDateTime creationTime;
+    private String creationTime;
 }

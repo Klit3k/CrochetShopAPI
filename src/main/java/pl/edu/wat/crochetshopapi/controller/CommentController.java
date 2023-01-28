@@ -1,6 +1,7 @@
 package pl.edu.wat.crochetshopapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +21,10 @@ public class CommentController {
     public ResponseEntity<?> addComment(@RequestParam("productId") long productId,
                                         @RequestParam("clientId") long clientId,
                                         @RequestParam("content") String content) {
-        return new ResponseEntity<>(mapper.commentDTO(commentService.add(productId, clientId, content)), HttpStatusCode.valueOf(200));
+        if(content.length() < 10)
+            return new ResponseEntity<>("Too few characters.",HttpStatus.BAD_REQUEST);
+        else
+            return new ResponseEntity<>(mapper.commentDTO(commentService.add(productId, clientId, content)), HttpStatusCode.valueOf(200));
     }
 
     @DeleteMapping(value = "/comment")

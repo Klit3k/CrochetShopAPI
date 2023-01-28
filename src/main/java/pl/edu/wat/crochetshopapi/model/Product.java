@@ -3,9 +3,7 @@ package pl.edu.wat.crochetshopapi.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import pl.edu.wat.crochetshopapi.Configuration;
 
-import java.io.ObjectInputFilter;
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,6 +20,7 @@ public class Product implements Serializable {
     private long id;
     private boolean isReserved;
     private String name;
+    @Column(columnDefinition="TEXT")
     private String description;
     private double price;
     private String category;

@@ -32,6 +32,7 @@ public class ImageService {
             throw new ImageAlreadyExistsException("Image with this name already exits.");
 
         File convertFile = new File(Configuration.IMAGES_PATH + file.getOriginalFilename());
+
         if (file.getContentType() == null || !file.getContentType().equals("image/png"))
             throw new InvalidTypeOfFileException("Invalid type of file.");
 

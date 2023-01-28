@@ -1,6 +1,5 @@
 package pl.edu.wat.crochetshopapi.dto;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 
 import java.io.Serializable;
