@@ -47,6 +47,8 @@ public class Mapper {
         for (Comment el : product.getComments()) {
             commentDTOList.add(commentDTO(el));
         }
+        commentDTOList.sort(Comparator.comparing(CommentDTO::getCreationTime).reversed());
+
         return ProductDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -64,7 +66,11 @@ public class Mapper {
                 .surname(client.getSurname())
                 .build();
     }
-
+    public ClientIdDTO clientIdDTO(Client client){
+        return ClientIdDTO.builder()
+                .clientId(client.getId())
+                .build();
+    }
     public CommentDTO commentDTO(Comment comment) {
         return CommentDTO.builder()
                 .id(comment.getId())

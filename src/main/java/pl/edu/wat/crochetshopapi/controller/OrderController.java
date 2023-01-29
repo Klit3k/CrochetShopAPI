@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 import pl.edu.wat.crochetshopapi.dto.Mapper;
 import pl.edu.wat.crochetshopapi.service.OrderService;
 import pl.edu.wat.crochetshopapi.service.PayuService;
@@ -38,4 +39,14 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getStatus(orderId), HttpStatusCode.valueOf(200));
     }
 
+    @GetMapping(value = "/order/update")
+    public RedirectView updateStatus(@RequestParam("orderId") long orderId ,
+                                     @RequestParam(value = "error", required = false, defaultValue = "") String error) {
+        if(error.isBlank())
+            orderService.updateStatus(orderId, true);
+        else
+            orderService.updateStatus(orderId, false);
+
+        return new RedirectView("http://localhost:3000/home/thank-you");
+    }
 }

@@ -9,6 +9,7 @@ import pl.edu.wat.crochetshopapi.model.*;
 import pl.edu.wat.crochetshopapi.repository.ClientRepository;
 import pl.edu.wat.crochetshopapi.repository.OrderRepository;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,11 +63,17 @@ public class OrderService {
                 .value(value)
                 .client(client)
                 .build();
-        PayuCheckoutResponse payuResponse = payuService.checkout(order);
-        order.setPayuOrderId(payuResponse.getOrderId());
-        order.setRedirectUri(payuResponse.getRedirectUri());
         orderRepository.save(order);
 
+        try {
+            PayuCheckoutResponse payuResponse = payuService.checkout(order);
+
+            order.setPayuOrderId(payuResponse.getOrderId());
+            order.setRedirectUri(payuResponse.getRedirectUri());
+            orderRepository.save(order);
+        }catch(MalformedURLException ex) {
+            System.out.println(ex);
+        }
         if(client.getOrder().size() == 0) {
             client.setOrder(new ArrayList<>());
         }
@@ -81,6 +88,16 @@ public class OrderService {
 
     public OrderStatus getStatus(long orderId) {
         return get(orderId).getStatus();
+    }
+
+    public void updateStatus(long orderId, boolean isCompleted){
+
+        Order order = get(orderId);
+        if(isCompleted)
+            order.setStatus(OrderStatus.COMPLETED);
+        else
+            order.setStatus(OrderStatus.CANCELED);
+        orderRepository.save(order);
     }
 
     public List<Order> getAllOrders() {

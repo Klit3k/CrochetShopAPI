@@ -28,7 +28,7 @@ public class CommentService {
 
     public Comment add(long productId, long clientId, String content) {
         if (spamFilter(clientId, productId)!=0) {
-            throw new CommentSpamException("Too many comments. Wait " + (Configuration.COMMENT_DELAY_TIME*60+spamFilter(clientId, productId)) + " seconds.");
+            throw new CommentSpamException(String.valueOf(Configuration.COMMENT_DELAY_TIME*60+spamFilter(clientId, productId)));
         }
         Comment comment = commentRepository.save(Comment.builder()
                 .author(clientService.get(clientId))

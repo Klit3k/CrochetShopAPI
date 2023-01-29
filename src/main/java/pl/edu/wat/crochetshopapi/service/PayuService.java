@@ -15,6 +15,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.edu.wat.crochetshopapi.dto.*;
 import pl.edu.wat.crochetshopapi.model.Order;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +27,8 @@ public class PayuService {
     String PAYU_URL;
     @Value("${payu.merchantId}")
     String PAYU_MERCHANT_ID;
+    @Value("${payu.continueUrl}")
+    URL CONTINUE_URL ;
     @Autowired
     private Mapper mapper;
 
@@ -59,14 +63,20 @@ public class PayuService {
         return "";
     }
 
-    public PayuCheckoutResponse checkout(Order order) {
+    public PayuCheckoutResponse checkout(Order order) throws MalformedURLException {
 
+        System.out.println("UWAGA "+order.getId());
 
         List<PayuProduct> products = order
                 .getProducts()
                 .stream()
                 .map(e -> mapper.productToPayu(e))
                 .toList();
+
+
+        String str = CONTINUE_URL +
+                "/order/update?orderId=" +
+                order.getId();
 
         PayuCheckoutRequest req = PayuCheckoutRequest.builder()
                 .currencyCode("PLN")
@@ -76,6 +86,7 @@ public class PayuService {
                 .merchantPosId(PAYU_MERCHANT_ID)
                 .products(products)
                 .buyer(mapper.clientToPayu(order.getClient()))
+                .continueUrl(new URL(str))
                 .build();
 
         String urlTemplate = UriComponentsBuilder.newInstance()

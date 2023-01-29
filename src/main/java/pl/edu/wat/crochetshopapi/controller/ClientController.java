@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pl.edu.wat.crochetshopapi.dto.Mapper;
+import pl.edu.wat.crochetshopapi.exception.ClientNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Address;
 import pl.edu.wat.crochetshopapi.service.ClientService;
 
@@ -13,12 +15,20 @@ import pl.edu.wat.crochetshopapi.service.ClientService;
 public class ClientController {
     @Autowired
     ClientService clientService;
-
+    @Autowired
+    Mapper mapper;
     @GetMapping(value = "/client")
     public ResponseEntity<?> getClient(@RequestParam(name = "id") long id) {
         return new ResponseEntity<>(clientService.get(id), HttpStatusCode.valueOf(200));
     }
-
+    @GetMapping(value = "/client-id")
+    public ResponseEntity<?> getClientId(@RequestParam(name = "email") String email) {
+        return new ResponseEntity<>(mapper.clientIdDTO(clientService.getByEmail(email).orElseThrow(() -> new ClientNotFoundException("Client with email" + email + "not found"))), HttpStatusCode.valueOf(200));
+    }
+    @GetMapping(value = "/client-by-email")
+    public ResponseEntity<?> getClientByEmail(@RequestParam(name = "email") String email) {
+        return new ResponseEntity<>(mapper.clientDTO(clientService.getByEmail(email).orElseThrow(() -> new ClientNotFoundException("Client with email" + email + "not found"))), HttpStatusCode.valueOf(200));
+    }
     @GetMapping(value = "/clients")
     public ResponseEntity<?> getClients() {
         return new ResponseEntity<>(clientService.getAllClients(), HttpStatusCode.valueOf(200));

@@ -3,6 +3,7 @@ package pl.edu.wat.crochetshopapi.dto;
 import lombok.*;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.List;
 
 @Getter
@@ -18,4 +19,5 @@ public class PayuCheckoutRequest implements Serializable {
     String totalAmount;
     PayuBuyer buyer;
     List<PayuProduct> products;
+    URL continueUrl;
 }

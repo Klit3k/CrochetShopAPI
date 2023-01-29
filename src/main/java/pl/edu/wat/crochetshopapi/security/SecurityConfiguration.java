@@ -41,6 +41,8 @@ public class SecurityConfiguration {
             client = clientRepository.findByEmail(pl.edu.wat.crochetshopapi.Configuration.ADMIN_LOGIN).get();
         } else {
             client = Client.builder()
+                    .name("admin")
+                    .surname("admin")
                     .email(pl.edu.wat.crochetshopapi.Configuration.ADMIN_LOGIN)
                     .role("ROLE_ADMIN")
                     .build();
