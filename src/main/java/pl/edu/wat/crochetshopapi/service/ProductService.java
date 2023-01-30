@@ -26,7 +26,7 @@ public class ProductService {
                 Product.builder()
                         .name(name)
                         .description(description)
-                        .price(price)
+                        .price(Math.round(price * 100.0) / 100.0)
                         .build());
     }
 

@@ -20,7 +20,7 @@ public class Variant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    @OneToMany(targetEntity = Product.class)
+    @ManyToMany(targetEntity = Product.class)
     List<Product> variants;
     private String material;
     private String color;

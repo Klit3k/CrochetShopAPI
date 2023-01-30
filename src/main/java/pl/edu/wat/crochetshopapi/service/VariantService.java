@@ -47,11 +47,13 @@ public class VariantService {
     }
     public void delFromVariant(long variantId, long productId) {
         Variant variant = get(variantId);
-        if (variant.getVariants().isEmpty())
+        if (variant.getVariants().isEmpty()) {
             variantRepository.delete(variant);
+        }
         else {
             variant.getVariants()
                     .remove(productService.get(productId));
+            variantRepository.save(variant);
         }
     }
 

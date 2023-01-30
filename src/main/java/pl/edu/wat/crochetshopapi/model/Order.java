@@ -22,7 +22,7 @@ public class Order {
     @Column(columnDefinition = "TEXT")
 
     private String redirectUri;
-    @OneToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     private List<Product> products;
 
     private double value;

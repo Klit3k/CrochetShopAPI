@@ -1,14 +1,17 @@
 package pl.edu.wat.crochetshopapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.edu.wat.crochetshopapi.dto.Mapper;
 import pl.edu.wat.crochetshopapi.exception.ClientNotFoundException;
 import pl.edu.wat.crochetshopapi.model.Address;
+import pl.edu.wat.crochetshopapi.model.Client;
 import pl.edu.wat.crochetshopapi.service.ClientService;
 
 @RestController
@@ -34,7 +37,20 @@ public class ClientController {
         return new ResponseEntity<>(clientService.getAllClients(), HttpStatusCode.valueOf(200));
     }
 
-    @GetMapping(value = "/add-address")
+    @PostMapping(value = "/client/edit")
+    public ResponseEntity<?> editClient(@RequestParam(name = "id") long id,
+                                        @RequestParam(name = "name") String name,
+                                        @RequestParam(name = "surname") String surname,
+                                        @RequestParam(name = "phone") String phone){
+        Client client = clientService.get(id);
+        client.setName(name);
+        client.setSurname(surname);
+        client.setPhone(phone);
+
+        clientService.update(id, client);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping(value = "/add-address")
     public ResponseEntity<?> addAddress(@RequestParam("clientId") long clientId,
                                         @RequestParam(name = "city") String city,
                                         @RequestParam(name = "street") String street,

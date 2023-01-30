@@ -1,5 +1,6 @@
 package pl.edu.wat.crochetshopapi.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.wat.crochetshopapi.dto.PayuCheckoutResponse;
@@ -28,6 +29,9 @@ public class OrderService {
 
     @Autowired
     private PayuService payuService;
+    @Autowired
+    private ContactService contactService;
+    @Transactional
     public Order addOrder(long clientId) {
         Client client = clientService.get(clientId);
 
@@ -81,7 +85,11 @@ public class OrderService {
         client.getOrder().add(order);
         clientRepository.save(client);
 
+        StringBuilder str = new StringBuilder();
 
+        order.getProducts()
+                        .forEach(product -> {str.append(String.format(product.getName()+" koszt: "+product.getPrice()+" zł\n"));});
+        contactService.submitContactRequest("Zakupy w sklepie CrochetShop. Zamówienie #"+order.getId(), "Dziękujemy za zakupy w sklepie internetowym CrochetShop i zapraszamy do zakupów :) \nLista zakupów:\n"+str.toString());
         return client.getOrder()
                 .get(client.getOrder().size()-1);
     }
@@ -95,8 +103,10 @@ public class OrderService {
         Order order = get(orderId);
         if(isCompleted)
             order.setStatus(OrderStatus.COMPLETED);
-        else
+        else{
+            order.getProducts().forEach(product -> {product.setReserved(false);});
             order.setStatus(OrderStatus.CANCELED);
+        }
         orderRepository.save(order);
     }
 

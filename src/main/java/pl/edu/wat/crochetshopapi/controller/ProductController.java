@@ -40,7 +40,7 @@ public class ProductController {
                 productService.update(productId, Product.builder()
                         .name(name)
                         .description(description)
-                        .price(price)
+                        .price(Math.round(price * 100.0) / 100.0)
                         .build()
         ), HttpStatusCode.valueOf(200));
     }
